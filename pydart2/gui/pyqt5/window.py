@@ -48,6 +48,8 @@ class PyQt5Window(QtWidgets.QMainWindow):
 
         super(PyQt5Window, self).__init__()
 
+        self.is_current_scene_rendered = False
+
         # setup_logger()
         self.logger = logging.getLogger(__name__)
         self.init_callbacks()
@@ -55,7 +57,7 @@ class PyQt5Window(QtWidgets.QMainWindow):
         self.logger.info('sim = [%s]' % str(self.sim))
 
         # Check and create captures directory
-        self.set_capture_rate(100)
+        # self.set_capture_rate(100)
         self.set_capture_dir('data/captures')
 
         self.initActions()
@@ -75,7 +77,8 @@ class PyQt5Window(QtWidgets.QMainWindow):
         # self.camera_event(0)
 
         self.after_reset = True
-        self.set_capture_rate(100)
+        # self.set_capture_rate(100)
+        self.set_capture_rate(50)
 
         self.input_keys = list()
         self.topLeft()
@@ -290,7 +293,8 @@ class PyQt5Window(QtWidgets.QMainWindow):
             if not self.is_current_scene_rendered:
                 return
             v = self.rangeSlider.value()
-            v += 1
+            # v += 1
+            v += 2
             if v <= self.rangeSlider.maximum():
                 self.rangeSlider.setValue(v)
             else:
@@ -362,7 +366,7 @@ class PyQt5Window(QtWidgets.QMainWindow):
 
         name = self.prob_name()
         # yuv420p for compatibility for outdated codecs
-        cmt_fmt = 'avconv -r %d' % self.capture_rate()
+        cmt_fmt = 'ffmpeg -r %d' % self.capture_rate()
         cmt_fmt += ' -i %s/%s.%%04d.png'
         cmt_fmt += ' -pix_fmt yuv420p'
         cmt_fmt += ' %s.mp4'
